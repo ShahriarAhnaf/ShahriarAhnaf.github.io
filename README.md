@@ -1,2 +1,2 @@
-# ShahriarAhnaf.github.io
+# Ahnaf Shahriar
 My first site to animate and have fun with!
