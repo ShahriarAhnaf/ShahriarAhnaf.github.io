@@ -1,6 +1,13 @@
+*{
+    margin : 0px;
+    padding : 0px;
+}
 
-#directory {
-    font-size: 30px;
-    text-align: center;
-    margin-top: 25%;
+.header{
+    min-height : 100vh;
+    width: 100%;
+    background-image:  url("images/background.jpg") ;
+    background-position: center;
+    background-size: cover;
+    position:relative;
 }
