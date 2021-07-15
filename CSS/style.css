@@ -1,6 +1,7 @@
 *{
     margin : 0px;
     padding : 0px;
+    font-family: 'Playfair Display', serif;
 }
 
 .header{
@@ -28,7 +29,24 @@ nav img{
 
 .nav-links ul li{
     list-style: none;
-    display: inline;
+    display: inline-block;
     padding: 8px 12px;
     position: relative;
+}
+.nav-links ul li a{
+    color:white;
+    text-decoration: none;
+    font-size: 18px;
+}
+.nav-links ul li::after{
+    content: '';
+    width:0%;
+    height: 2px;
+    background:coral;
+    display:block;
+    margin:auto;
+    transition:0.5s;
+}
+.nav-links ul li:hover::after{
+    width:100%;
 }
