@@ -24,12 +24,12 @@ jobs:
       - name: Build
         run: hugo --minify
 
-      name: Upload artifact
-      uses: actions/upload-artifact@main
-      with:
-        name: ${{ inputs.name }}
-        path: ./public
-        retention-days: ${{ inputs.retention-days }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@main
+        with:
+          name: ${{ inputs.name }}
+          path: ./public
+          retention-days: ${{ inputs.retention-days }}
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
