@@ -28,7 +28,7 @@ jobs:
         # Don't run again on an already pushed auto commit.
         if: github.event_name == 'push' && env.is-auto-commit == false
         run: |
-          git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
+          git config --global user.name "${{CI_COMMIT_AUTHOR}}"
           git config --global user.email "shahriarahnaf007@users.noreply.github.com"
           git commit -a -m "${{ env.CI_COMMIT_MESSAGE }}"
           git push
