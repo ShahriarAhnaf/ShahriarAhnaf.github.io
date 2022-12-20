@@ -6,4 +6,4 @@ draft: false
 
 ## Projects 
 Welcome to my humble abode, some links to hopefully interesting recounts of my projects and adventures
-{{< ref "document.md" >}}
+{{< relref "summary.md" >}}
