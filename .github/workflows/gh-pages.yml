@@ -24,16 +24,44 @@ jobs:
       - name: Build
         run: hugo --minify
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/main'
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+      # - name: Deploy
+      #   uses: peaceiris/actions-gh-pages@v3
+      #   if: github.ref == 'refs/heads/main'
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: ./public
+
       
       - name: Upload artifact
         uses: actions/upload-artifact@main
         with:
-          name: Drip Files
+          name: Drip
           path: ./public
           retention-days: 21
+      
+      - name: Check out gh-pages branch
+        uses: actions/checkout@v3
+        with:
+          ref: gh-pages
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
+
+      # Create or update the gh-pages branch
+      - name: Create or update gh-pages branch
+        uses: actions/create-or-update-branch@v1
+        with:
+          branch: gh-pages
+          repository_dispatch: true
+
+      # Extract the built site from the artifact
+      - name: Extract built site
+        run: unzip Drip.zip
+
+      # Commit and push the built site to the gh-pages branch
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Deploy to gh-pages"
+          git push origin gh-pages
