@@ -46,12 +46,13 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           persist-credentials: false
 
+      # HOpefully this is unecessary due to chekout 
       # Create or update the gh-pages branch
-      - name: Create or update gh-pages branch
-        uses: actions/create-or-update-branch@v1
-        with:
-          branch: gh-pages
-          repository_dispatch: true
+      # - name: Create or update gh-pages branch
+      #   uses: actions/create-or-update-branch@v1
+      #   with:
+      #     branch: gh-pages
+      #     repository_dispatch: true
 
       # Extract the built site from the artifact
       - name: Extract built site
