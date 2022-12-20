@@ -3,7 +3,6 @@ name: github pages
 on:
   push:
     branches:
-      - pipeline
       - main   # Set a branch that will trigger a deployment
   pull_request:
 
@@ -39,24 +38,3 @@ jobs:
           name: Drip
           path: ./public
           retention-days: 21
-
-      # HOpefully this is unecessary due to chekout 
-      # Create or update the gh-pages branch
-      # - name: Create or update gh-pages branch
-      #   uses: actions/create-or-update-branch@v1
-      #   with:
-      #     branch: gh-pages
-      #     repository_dispatch: true
-
-      # Extract the built site from the artifact
-      # - name: Extract built site
-      #   run: unzip Drip.zip
-
-      # Commit and push the built site to the gh-pages branch
-      # - name: Commit and push changes
-      #   run: |
-      #     git config --local user.email "action@github.com"
-      #     git config --local user.name "GitHub Action"
-      #     git add -f ./public
-      #     git commit -m "Deploy to gh-pages"
-      #     git push origin gh-pages
