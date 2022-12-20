@@ -53,10 +53,10 @@ jobs:
       #   run: unzip Drip.zip
 
       # Commit and push the built site to the gh-pages branch
-      - name: Commit and push changes
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add -f ./public
-          git commit -m "Deploy to gh-pages"
-          git push origin gh-pages
+      # - name: Commit and push changes
+      #   run: |
+      #     git config --local user.email "action@github.com"
+      #     git config --local user.name "GitHub Action"
+      #     git add -f ./public
+      #     git commit -m "Deploy to gh-pages"
+      #     git push origin gh-pages
