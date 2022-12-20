@@ -9,18 +9,25 @@ pygmentsCodeFences = true
 pygmentsCodeFencesGuessSyntax = true
 enableEmoji = true
 # Enable Disqus comments
-# disqusShortname = "yourdiscussshortname"
+disqusShortname = "yourdiscussshortname"
+
+# for search engine optimization at the google level
+[sitemap]
+  changefreq = "weekly"
+  filename = "sitemap.xml"
+  priority = 0.5
+
 
 [params]
 author = "Ahnaf Shahriar"
 # license = '<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA-4.0</a>'
 description = "Ahnaf Shahriar's personal website"
 keywords = "blog,developer,personal"
-info = ["Software Engineer", "Athlete"]
+info = ["Software Engineer", "Yama Coin Tester"]
 avatarURL = "images/avatar.jpg"
 #gravatar = "john.doe@example.com"
 dateFormat = "January 2, 2006"
-since = 2021
+since = 2003
 # Git Commit in Footer, uncomment the line below to enable it
 commit = "https://github.com/luizdepra/hugo-coder/tree/"
 # Right To Left, shift content direction for languagues such as Arabic
@@ -107,7 +114,7 @@ author = "authors"
 [[params.social]]
 name = "Github"
 icon = "fa fa-2x fa-github"
-weight = 1
+weight = 50
 url = "https://github.com/ShahriarAhnaf/"
 
 

@@ -1,7 +1,7 @@
 ---
 title: "Seer"
 date: 2022-12-18T00:02:05-08:00
-draft: false
+draft: true
 ---
  ## Have you ever tried to predict the future?
 
