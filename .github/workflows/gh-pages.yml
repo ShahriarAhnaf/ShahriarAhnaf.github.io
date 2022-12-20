@@ -3,7 +3,8 @@ name: github pages
 on:
   push:
     branches:
-      - main  # Set a branch that will trigger a deployment
+      - pipeline
+      - main   # Set a branch that will trigger a deployment
   pull_request:
 
 jobs:
@@ -24,12 +25,12 @@ jobs:
       - name: Build
         run: hugo --minify
 
-      # - name: Deploy
-      #   uses: peaceiris/actions-gh-pages@v3
-      #   if: github.ref == 'refs/heads/main'
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     publish_dir: ./public
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        #if: github.ref == 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
 
       
       - name: Upload artifact
@@ -38,13 +39,6 @@ jobs:
           name: Drip
           path: ./public
           retention-days: 21
-      
-      - name: Check out gh-pages branch
-        uses: actions/checkout@v3
-        with:
-          ref: gh-pages
-          token: ${{ secrets.GITHUB_TOKEN }}
-          persist-credentials: false
 
       # HOpefully this is unecessary due to chekout 
       # Create or update the gh-pages branch
