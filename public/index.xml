@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ahnaf Shahriar</title>
+    <link>https://ShahriarAhnaf.github.io/</link>
+    <description>Recent content on Ahnaf Shahriar</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 18 Dec 2022 00:02:05 -0800</lastBuildDate><atom:link href="https://ShahriarAhnaf.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Seer</title>
+      <link>https://ShahriarAhnaf.github.io/projects/seer/</link>
+      <pubDate>Sun, 18 Dec 2022 00:02:05 -0800</pubDate>
+      
+      <guid>https://ShahriarAhnaf.github.io/projects/seer/</guid>
+      <description>Have you ever tried to predict the future? Because I have figured out a way to do it 50% of the time.
+Magic? no its simply Math, with a generous bit of luck.</description>
+    </item>
+    
+    <item>
+      <title>First Post</title>
+      <link>https://ShahriarAhnaf.github.io/posts/my-first-post/</link>
+      <pubDate>Sun, 18 Dec 2022 00:00:53 -0800</pubDate>
+      
+      <guid>https://ShahriarAhnaf.github.io/posts/my-first-post/</guid>
+      <description>Introduction This is bold text, and this is emphasized text.
+How to set up Hugo for fast ASF site gen you asking the wrong guy, this took me an arm and a leg to set up Visit the Hugo website!</description>
+    </item>
+    
+  </channel>
+</rss>
