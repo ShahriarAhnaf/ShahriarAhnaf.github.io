@@ -1,4 +1,4 @@
-I'd love to hear abuot any software engineering internship opportunities!
+I'd love to hear about any software engineering internship opportunities!
 
 You can reach out to me via my email: shahriarahnaf007@gmail.com
 
