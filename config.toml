@@ -22,8 +22,8 @@ disqusShortname = "yourdiscussshortname"
 author = "Ahnaf Shahriar"
 # license = '<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA-4.0</a>'
 description = "Ahnaf Shahriar's personal website"
-keywords = "blog,developer,personal"
-info = ["Software Engineer", "Yama Coin Tester"]
+keywords = "blog, developer, personal, programmer, projects, Ahnaf Shahriar"
+info = ["Software Engineer", "Problem Solver"]
 avatarURL = "images/avatar.jpg"
 #gravatar = "john.doe@example.com"
 dateFormat = "January 2, 2006"
