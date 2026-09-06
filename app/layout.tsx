@@ -12,5 +12,11 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body className={`${manrope.variable} ${archivo.variable}`}>{children}</body></html>;
+  return <html lang="en"><head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-66B00THC9M" />
+    <script dangerouslySetInnerHTML={{ __html: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-66B00THC9M');` }} />
+  </head><body className={`${manrope.variable} ${archivo.variable}`}>{children}</body></html>;
 }

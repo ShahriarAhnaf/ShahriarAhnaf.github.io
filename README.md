@@ -50,3 +50,20 @@ GitHub Pages uses **GitHub Actions** as its publishing source. There is no manua
 `.openai/hosting.json` records the original Sites project and static output directory; GitHub Pages deployment does not require Sites credentials. `CONTENT_SOURCES.md` documents the portfolio's factual sources and image origins.
 
 The former Hugo site and the earlier prebuilt-only version remain in Git history.
+
+## Publish a Markdown blog post
+
+1. Copy `content/posts/post-template.md` to `content/posts/your-post-name.md` (or use **Add file → Create new file** on GitHub).
+2. Fill in the title, quoted date (`"2026-09-06"`), and description at the top. Write the article underneath the second `---`.
+3. Set `draft: false` when ready. Drafts stay out of the site and its generated public files.
+4. Commit to `main`. Once the Pages workflow finishes, the post appears at `/blog/your-post-name/` and in the **Writing** list, newest first.
+
+The filename becomes the permanent URL: use lowercase words separated by hyphens. Avoid renaming published files unless you also arrange redirects. Titles, dates, and descriptions are required for published posts; invalid metadata fails the build rather than publishing a broken page.
+
+Markdown supports headings, links, images, quotes, lists, fenced code blocks, and GitHub-style tables. Raw HTML is not executed. Put images under `public/images/blog/` and refer to them as `![Alt text](/images/blog/image.jpg)`. No CMS or server is required. The old Hugo post is preserved as an unpublished draft.
+
+## Analytics and Search Console
+
+Search Console verification is in `app/layout.tsx`. It verifies site ownership but does not record visits.
+
+Google Analytics uses Measurement ID `G-66B00THC9M`; the Google tag is in `app/layout.tsx` and loads on every page. Navigation uses regular page loads, so each blog URL receives its own page view without duplicate manual events. In GA4, use Reports → Engagement → Pages and screens to compare posts by page path, views, active users, and engagement. Use Realtime to check initial visits (ad blockers can prevent collection). The Google Analytics MCP is installed locally in Codex for reading reports; it does not install the tracking tag or create a GA4 property. Connecting MCP reports also requires Google authentication and a Cloud project with the Analytics Admin and Data APIs enabled. Never commit Google credentials to this repository.

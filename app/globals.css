@@ -252,3 +252,36 @@ h1 { font-size: clamp(82px, 8.4vw, 132px); line-height: .96; font-weight: 580; l
  .diagram-bottom { font-size: 9px; }.job-detail { display: none; }.job-title > span:last-child { font-size: 11px; }.job-title > span:first-child { font-size: 16px; }
  .experience-list .job-description { padding-left: 0; padding-right: 0; }.about-socials { gap: 18px; }.more-projects h3 { font-size: 18px; }
 }
+
+/* Writing shares the portfolio palette, with a quieter reading width. */
+.writing-page { max-width: 1080px; margin: auto; padding: 90px 6% 120px; min-height: 70vh; }
+.writing-heading h1 { font-size: clamp(64px, 10vw, 108px); letter-spacing: -.055em; margin: 0; }
+.writing-heading > p { margin-top: 26px; color: var(--muted-foreground); font-size: 18px; }
+.post-list { margin-top: 64px; border-top: 1px solid var(--border); }
+.post-preview { display: block; padding: 32px 0; border-bottom: 1px solid var(--border); }
+.post-meta { display: flex; flex-wrap: wrap; gap: 18px; color: var(--muted-foreground); font-size: 13px; }
+.post-preview h2 { font-size: clamp(26px, 4vw, 36px); font-weight: 550; letter-spacing: -.03em; line-height: 1.2; margin: 14px 0; }
+.post-preview p { color: var(--muted-foreground); max-width: 60ch; }
+.post-read { display: inline-block; margin-top: 20px; color: var(--primary); font-size: 14px; }
+.post-preview:hover h2 { color: var(--primary); }
+.writing-empty { padding: 32px 0; color: var(--muted-foreground); }
+.article-page { max-width: 840px; padding: 56px 6% 110px; margin: auto; }
+.back-writing { color: var(--primary); font-size: 14px; }
+.article-heading { padding: 46px 0 34px; border-bottom: 1px solid var(--border); margin-bottom: 38px; }
+.article-heading h1 { font-size: clamp(38px, 5.5vw, 60px); letter-spacing: -.035em; line-height: 1.1; margin: 20px 0; overflow-wrap: anywhere; }
+.article-heading > p { font-size: 19px; color: var(--muted-foreground); }
+.article-author { display: block; margin-top: 24px; font-size: 14px; }
+.prose { font-size: 17px; line-height: 1.9; overflow-wrap: anywhere; }
+.prose p, .prose ul, .prose ol, .prose blockquote, .prose pre, .prose table { margin: 0 0 24px; }
+.prose h1, .prose h2, .prose h3 { line-height: 1.25; letter-spacing: -.025em; margin: 42px 0 18px; font-weight: 600; }
+.prose h1 { font-size: 34px; }.prose h2 { font-size: 28px; }.prose h3 { font-size: 22px; }
+.prose ul { list-style: disc; padding-left: 25px; }.prose ol { list-style: decimal; padding-left: 25px; }
+.prose a { color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+.prose blockquote { border-left: 3px solid var(--primary); padding: 8px 0 8px 24px; color: var(--muted-foreground); }.prose blockquote p:last-child { margin: 0; }
+.prose pre { background: #202939; color: #eef2fa; padding: 22px; border-radius: 6px; overflow-x: auto; font-size: 14px; line-height: 1.7; }
+.prose :not(pre) > code { background: var(--muted); padding: 2px 5px; border-radius: 3px; font-size: .88em; }
+.prose img { max-width: 100%; height: auto; border-radius: 6px; }
+.prose table { display: block; overflow-x: auto; border-collapse: collapse; }.prose th, .prose td { border: 1px solid var(--border); padding: 10px 14px; }
+.prose hr { border: 0; border-top: 1px solid var(--border); margin: 38px 0; }
+.blog-footer { border-top: 1px solid var(--border); padding: 28px 6%; display: flex; justify-content: space-between; gap: 24px; font-size: 13px; color: var(--muted-foreground); }
+@media (max-width: 440px) { .site-header nav { gap: 12px; font-size: 12px; }.writing-page { padding-top: 56px; }.article-page { padding-top: 32px; } }
