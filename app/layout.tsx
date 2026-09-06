@@ -6,6 +6,7 @@ const manrope = Manrope({ variable: '--font-manrope', subsets: ['latin'], displa
 const archivo = Archivo({ variable: '--font-archivo', subsets: ['latin'], display: 'swap' });
 
 export const metadata: Metadata = {
+  verification: { google: 'kejhEBczT_dYCPgZeMa-mbji_ipbjcAWYmMLXO8ZBUA' },
   title: 'Ahnaf Shahriar — Close to the metal',
   description: 'Cofounder & CTO at Simantic (YC F26). Embedded systems, computer architecture, and tools that let AI understand the physical world.',
 };
