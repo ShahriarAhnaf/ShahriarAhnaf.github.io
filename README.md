@@ -1,17 +1,11 @@
-# Personal Website 
+# Ahnaf Shahriar — Personal portfolio
 
-Updated infrequently
+Live at https://shahriarahnaf.github.io/.
 
+This repository contains the prebuilt static portfolio: HTML, CSS, JavaScript, fonts, and images. No server, Hugo, package installation, or build step is required to publish it.
 
+GitHub Pages serves the root of the `main` branch. `.nojekyll` ensures the `_next` asset directory is published unchanged.
 
-## How it works 
+To preview locally, run `python3 -m http.server 8000` from this directory and open http://localhost:8000.
 
-Using the Hugo template and generation tool, you simply add content in the form of markdown files in the **content** section of the repo. The theme and overall configurations are handled using the **config.toml** file. 
-
-
-## Testing 
-
-1. Install and setup hugo by following [this](https://gohugo.io/installation/)
-2. run ```hugo server``` and open the hosted local website 
-
-
+The former Hugo site and its configuration remain in Git history.
