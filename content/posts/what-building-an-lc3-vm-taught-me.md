@@ -1,7 +1,7 @@
 ---
 title: "What building an LC-3 virtual machine taught me"
 date: "2026-09-09"
-description: "A small C project that made instructions, memory, debugging, and performance measurement concrete for me."
+description: "Printf debugging, learning what a program needs from a computer, and the beginnings of my journey toward Simantic."
 draft: false
 ---
 
@@ -11,7 +11,7 @@ It's a program written in C that interprets instructions for another computer ar
 
 I started from [*Write your Own Virtual Machine* by Justin Meiners and Ryan Pendleton](https://www.jmeiners.com/lc3-vm/). They deserve the credit for the tutorial and its foundation. My repository records my work through it, along with debugging output and experiments around instruction decoding and timing.
 
-This post is about what I take away from that work, including things I would approach differently now.
+Looking back, this was the start of my journey toward building the emulator at [Simantic](https://simantic.dev). This little VM was how I started learning what a computer program actually needs in order to run.
 
 ## An instruction becomes a change in state
 
@@ -46,11 +46,17 @@ The same care matters with memory. The array in [VM.h](https://github.com/Shahri
 
 Those distinctions are small enough to explain in a sentence and important enough to break an entire program.
 
-## Debugging needs a view into the machine
+## Printf debugging (trace debugging for the pros)
+
+Funnily enough, I barely used GDB or LLDB back then. I worked through this project with `printf` debugging—trace debugging for the pros.
+
+Print the state. Run the program. Read what happened. Try to work out where it stopped matching what I expected.
 
 I added functions to dump memory and register state. `MAP_VM` records nonzero memory contents, while `MAP_REGISTERS` records register snapshots. In the debug build, the main loop requests a snapshot when it encounters a branch opcode. [Debugging helpers](https://github.com/ShahriarAhnaf/LC-3-VM/blob/e5a7f36448a45e1cfcb3a2d863018b3252ca31b6/src/VM.c).
 
-That gives me something more useful than a final answer that is simply wrong. I can ask where execution went, what the registers held, and what condition the branch observed.
+Those dumps were my view into the machine. I could follow where execution went, what the registers held, and what condition a branch observed. A wrong final answer became a sequence of changes I could inspect.
+
+The useful habit was making the program explain what it was doing. I had to decide which state mattered enough to print, then connect that output back to the instruction that changed it. That is a habit I still want in an emulator: being able to see why the firmware reached a particular state.
 
 A useful way to learn from this project is to trace one instruction by hand. Choose starting register values, predict the result and flags, then compare those predictions with the implementation. Extend that to a branch and follow the next instruction address.
 
@@ -76,10 +82,18 @@ I wouldn't use the old output as a reliable speedup claim today. I would first v
 
 That is part of what makes keeping this project useful. The code preserves both the experiment and the assumptions I can revisit.
 
-## Why start here?
+## From LC-3 to Simantic
 
-A small VM gives me a place to follow a program all the way through: instruction bits, register values, memory accesses, and the next address to execute.
+The question this project opened up for me was: what does a program actually need from a computer?
 
-It also captures the kind of learning I want this site to document. Start with something understandable, build on it, make the internal behavior visible, and come back with better questions.
+For this VM, the answer started with somewhere to keep state, rules for executing instructions, and ways to get input and produce output. The keyboard example made that last part tangible. Implementing arithmetic was only part of the job; the program also expected certain addresses to behave like a device.
+
+That is the connection I see to [Simantic](https://simantic.dev) now. The systems are more complicated, but I am still working on giving firmware the machine behavior it expects—and making that behavior visible enough to understand when something goes wrong.
+
+An instruction has to update the right state. A peripheral access has to mean something. An event the program is waiting for has to arrive under the right conditions. My LC-3 project gave me a small enough version of that problem to start working through it myself.
+
+I don't want to rewrite the story as if I had Simantic planned from the beginning. Looking back, I can see the thread: a small interpreter, a lot of printed state, and the realization that I could build the environment a program needs to run.
+
+That is why I wanted this to be my first post. It gives this site a starting point I can keep coming back to as the work grows.
 
 The [source is here](https://github.com/ShahriarAhnaf/LC-3-VM). If you want to build your own, the [original tutorial](https://www.jmeiners.com/lc3-vm/) is the starting point I used. My repository preserves the implementation, experiments, and unfinished edges.
