@@ -7,28 +7,46 @@ draft: false
 
 For my first post, I wanted to return to a small project: my [LC-3 virtual machine](https://github.com/ShahriarAhnaf/LC-3-VM).
 
-It's a program written in C that interprets instructions for another computer architecture. It has memory, registers, a program counter, and code that decides what each instruction does. Small enough to follow, but with enough moving parts to make the ideas behind a computer feel concrete.
+It's a program written in C that interprets instructions for another computer architecture. It has memory, registers, a program counter, and code that decides what each instruction does. Small enough to follow, but with enough moving parts to make the ideas behind a computer feel concrete. I remember I didn't even take an OS class or anything to know any of this.
 
-I started from [*Write your Own Virtual Machine* by Justin Meiners and Ryan Pendleton](https://www.jmeiners.com/lc3-vm/). They deserve the credit for the tutorial and its foundation. My repository records my work through it, along with debugging output and experiments around instruction decoding and timing.
+I started from [*Write your Own Virtual Machine* by Justin Meiners and Ryan Pendleton](https://www.jmeiners.com/lc3-vm/). They deserve the credit for the tutorial and its foundation. My repository records me stumbling through it, along with debugging output and experiments around instruction decoding and timing.
+
+This was about the time where I was also realizing that just copying tutorials is not enough and that to truly understand a system you have to break and modify it. which was the goal here beyond the tutorial.
 
 Looking back, this was the start of my journey toward building the emulator at [Simantic](https://simantic.dev). This little VM was how I started learning what a computer program actually needs in order to run.
 
 ## An instruction becomes a change in state
 
-The core of the VM is a loop. Read an instruction, work out what it means, update the machine, and repeat.
+If you've taken first-year digital logic, think about an adder connected to a few registers. The adder calculates a result from its inputs. The registers hold on to bits, even after those inputs change. The bits currently stored in those registers are part of the computer's **state**.
 
-In my implementation, fetching an instruction and finding its opcode looks like this:
+An instruction tells the computer which values to use, what to do with them, and where to store the result. In a hardware implementation, control signals select the inputs and enable the right register to save the output. My VM describes those changes with C code. It models the result of executing an instruction, rather than simulating every gate or clock edge.
+
+Take `ADD R2, R0, R1`. It means “add the numbers in R0 and R1, then put the answer in R2.” If R0 holds 3 and R1 holds 4, R2 becomes 7. Those input values are called **operands**. R2 is the **destination**: the register that receives the answer.
+
+```text
+R0 holds 3 ──┐
+             ├── adder ── 7 gets saved in R2
+R1 holds 4 ──┘
+```
+
+The LC-3 also remembers whether the most recent result was negative, zero, or positive. These are its **condition flags**: three stored yes/no bits, with one set to 1 to describe the result. For our answer of 7, the positive bit is set. Think of the zero flag as the output of a “does this equal zero?” circuit, saved so another instruction can use it later.
+
+A **branch** is an instruction that can choose a different instruction to run next. A branch-on-zero checks that saved zero bit. If it is 1, execution jumps to the specified location; otherwise, it carries on. In digital logic terms, that decision is like a select signal choosing between two inputs of a multiplexer: the next address in order, or the branch's target address.
+
+This is why getting the addition right is only part of the job. If the answer changes from 7 to 0 but I forget to update those saved bits, a later branch makes its decision using the old result.
+
+The core of the VM is a loop: read an instruction, work out what it means, update the stored values, and repeat. I was already very familiar with loops, so how hard could it be...
+
+In my implementation, reading an instruction and finding the operation looks like this:
 
 ```c
 uint16_t instr = mem_read(registers[R_PC]++);
 uint16_t op = instr >> 12;
 ```
 
-The program counter says where to read. The upper four bits select the operation. The rest of the instruction supplies fields such as register numbers or an immediate value—a number carried inside the instruction itself. The execution cases live in [main.c](https://github.com/ShahriarAhnaf/LC-3-VM/blob/e5a7f36448a45e1cfcb3a2d863018b3252ca31b6/src/main.c).
+The **program counter**, `R_PC`, is a register holding the memory address of the next instruction. The first line reads the instruction at that address and advances the counter by one. Each LC-3 instruction is 16 bits long. The second line shifts it right by 12 bits, leaving the top four bits. Those bits are the **opcode**: the code that selects an operation such as addition.
 
-That makes assembly less abstract. An `ADD` needs code that finds its operands, performs the addition, writes the destination, and updates the condition flags. A branch needs code that checks those flags and changes the program counter.
-
-The flags connect one instruction to the next. If a calculation produces zero, that fact has to survive long enough for a later branch to use it. Forgetting that update changes the program even if the arithmetic itself is correct.
+Think of those four bits as inputs to a decoder in a digital logic lab. They tell the machine which operation to perform. Other bits in the instruction select registers or supply a small number directly. My C code uses a `switch` to choose what happens next; the individual cases live in [main.c](https://github.com/ShahriarAhnaf/LC-3-VM/blob/e5a7f36448a45e1cfcb3a2d863018b3252ca31b6/src/main.c).
 
 ## A register number is not the value inside it
 
@@ -58,7 +76,7 @@ Those dumps were my view into the machine. I could follow where execution went, 
 
 The useful habit was making the program explain what it was doing. I had to decide which state mattered enough to print, then connect that output back to the instruction that changed it. That is a habit I still want in an emulator: being able to see why the firmware reached a particular state.
 
-A useful way to learn from this project is to trace one instruction by hand. Choose starting register values, predict the result and flags, then compare those predictions with the implementation. Extend that to a branch and follow the next instruction address.
+A useful way to learn from this project is to trace one instruction by hand. Choose starting register values, predict the answer and which negative/zero/positive bit should be set, then compare those predictions with the implementation. Extend that to a branch and follow the next instruction address.
 
 You don't need a large program to find a mistake in a state transition. A tiny example is often easier to reason about because you can account for every change.
 
@@ -72,7 +90,7 @@ So an instruction that looks like a memory access can interact with a device mod
 
 ## Optimization made me ask better questions
 
-I also experimented with extracting shared register fields before the opcode switch. The repository includes a logging build and a [Python script comparing timings by opcode](https://github.com/ShahriarAhnaf/LC-3-VM/blob/e5a7f36448a45e1cfcb3a2d863018b3252ca31b6/optimized-compare.py).
+I also experimented with reading the bits that select registers before the `switch` chooses an operation. Several instructions use the same bit positions for these register numbers, so I wanted to see whether I could do that work once in a shared part of the loop. The repository includes a logging build and a [Python script comparing timings by opcode](https://github.com/ShahriarAhnaf/LC-3-VM/blob/e5a7f36448a45e1cfcb3a2d863018b3252ca31b6/optimized-compare.py).
 
 The interesting question was whether repeated decoding work could be moved into a common path. But a common path still has to supply the right fields for every instruction that uses them. Fewer repeated lines are not enough to establish correctness or speed.
 
