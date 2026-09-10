@@ -5,15 +5,15 @@ description: "Printf debugging, learning what a program needs from a computer, a
 draft: false
 ---
 
-For my first post, I wanted to return to a small project: my [lil virtual machine](https://github.com/ShahriarAhnaf/LC-3-VM), built in C to run LC-3 programs.
+For my first post, I wanted to return to a small project: my [lil virtual machine](https://github.com/ShahriarAhnaf/LC-3-VM).
 
-The cracked people in Electrical Engineering were going through Ben Eater's 8-bit computer tutorial. I wanted to make something substantial in software to solidify what it meant to be in Computer Engineering. But my pea brain couldn't wrap itself around what an operating system actually was yet. I hadn't even taken an OS class, so a lil virtual machine felt like somewhere I could start.
+The cracked people in Electrical Engineering were all going through Ben Eater's 8-bit computer tutorial, which is why I kinda wanted to make something substantial in software to really solidify what it meant to be in Computer Engineering. But my pea brain couldn't wrap itself around what an OS really was, so I settled for a lil virtual machine.
 
-LC-3 is an educational computer architecture. My program interprets its instructions, keeping track of memory, registers, and which instruction to run next. It was small enough to follow, but had enough moving parts to make the ideas behind a computer feel concrete.
+It's a program written in C that interprets instructions for LC-3, an educational computer architecture. It has memory, registers, a program counter, and code that decides what each instruction does. It was small enough to follow, but had enough moving parts to make the ideas behind a computer feel concrete. I hadn't even taken an OS class yet, so all of this was new to me.
 
 I started from [*Write your Own Virtual Machine* by Justin Meiners and Ryan Pendleton](https://www.jmeiners.com/lc3-vm/). They deserve the credit for the tutorial and its foundation. My repository records me stumbling through it, along with debugging output and experiments around instruction decoding and timing.
 
-Around then, I was realizing that copying tutorials wasn't enough for me to understand a system. I needed to break things and modify them. That became the goal: get the tutorial working, then change it and figure out what happened.
+This was around the time I was also realizing that just copying tutorials was not enough. To truly understand a system, you have to break and modify it. That was my goal here: go beyond the tutorial.
 
 Looking back, this was the start of my journey toward building the emulator at [Simantic](https://simantic.dev). This lil virtual machine was how I started learning what a computer program actually needs in order to run.
 
@@ -80,7 +80,7 @@ The useful habit was making the program explain what it was doing. I had to deci
 
 A useful way to learn from this project is to trace one instruction by hand. Choose starting register values, predict the answer and which negative/zero/positive bit should be set, then compare those predictions with the implementation. Extend that to a branch and follow the next instruction address.
 
-You don't need a large program to find a mistake in a state transition. A tiny example is often easier to reason about because you can account for every change.
+You don't need a large program to find a mistake in a state transition. A tiny example is often easier to reason about—just like coding by hand in an exam (doom).
 
 ## A memory read can have behavior
 
@@ -94,7 +94,7 @@ So an instruction that looks like a memory access can interact with a device mod
 
 I also experimented with reading the bits that select registers before the `switch` chooses an operation. Several instructions use the same bit positions for these register numbers, so I wanted to see whether I could do that work once in a shared part of the loop. The repository includes a logging build and a [Python script comparing timings by opcode](https://github.com/ShahriarAhnaf/LC-3-VM/blob/e5a7f36448a45e1cfcb3a2d863018b3252ca31b6/optimized-compare.py).
 
-The interesting question was whether repeated decoding work could be moved into a common path. But that shared code still has to pick out the correct bits for each instruction that uses it. Fewer repeated lines are not enough to establish correctness or speed.
+The interesting question was whether repeated decoding work could be moved into a common path. But a common path still has to supply the right fields for every instruction that uses them. Fewer repeated lines are not enough to establish correctness or speed.
 
 Looking at the measurement code now, I would also be more careful with the evidence. The logger subtracts only the nanosecond fields of two timestamps, which mishandles measurements that cross a second boundary. The comparison script applies a scaling factor that needs checking before its displayed units can be trusted. Per-instruction timing also needs to account for the cost of measurement itself.
 
@@ -106,14 +106,14 @@ That is part of what makes keeping this project useful. The code preserves both 
 
 The question this project opened up for me was: what does a program actually need from a computer?
 
-For this VM, the answer started with somewhere to keep state, rules for executing instructions, and ways to get input and produce output. The keyboard example made that last part tangible. Implementing arithmetic was only part of the job; the program also expected certain addresses to behave like a device.
+For this VM, the answer started with somewhere to keep state, rules for executing instructions, and ways to get input and produce output.
 
-That is the connection I see to [Simantic](https://simantic.dev) now. The systems are more complicated, but I am still working on giving firmware the machine behavior it expects—and making that behavior visible enough to understand when something goes wrong.
+That is the connection I see to [Simantic](https://simantic.dev) now. The systems are more complicated, but I am still working on giving firmware the machine behavior it expects and making that behavior visible enough to understand when something goes wrong.
 
 An instruction has to update the right state. A peripheral access has to mean something. An event the program is waiting for has to arrive under the right conditions. My LC-3 project gave me a small enough version of that problem to start working through it myself.
 
-I don't want to rewrite the story as if I had Simantic planned from the beginning. Looking back, I can see the thread: a small interpreter, a lot of printed state, and the realization that I could build the environment a program needs to run.
+I don't want to rewrite the story as if I had Simantic planned from the beginning. I was just trying to understand how computers work. Looking back now, I can see how nicely it all connected later as part of God's plan.
 
-That is why I wanted this to be my first post. It gives this site a starting point I can keep coming back to as the work grows.
+That is why I wanted this to be my first post. It gives this site a starting point I can keep coming back to as the work grows. Being curious about how systems work never fails you as an engineer.
 
 The [source is here](https://github.com/ShahriarAhnaf/LC-3-VM). If you want to build your own, the [original tutorial](https://www.jmeiners.com/lc3-vm/) is the starting point I used. My repository preserves the implementation, experiments, and unfinished edges.
