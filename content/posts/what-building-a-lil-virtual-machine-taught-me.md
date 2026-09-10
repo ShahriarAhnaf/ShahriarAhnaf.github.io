@@ -7,9 +7,19 @@ draft: false
 
 The cracked people in Electrical Engineering were all going through Ben Eater's 8-bit computer tutorial. I kinda wanted to make something substantial in software to solidify what it meant to be in Computer Engineering. But my pea brain couldn't wrap itself around what an OS really was, so I settled for a lil virtual machine.
 
-I hadn't even taken an OS class yet. A computer had a lot of parts I could name without really understanding how they worked together. Building a small version in C gave me somewhere to start.
+I hadn't even taken an OS class yet. I could name computer parts without understanding how they worked together. Building a small version in C gave me somewhere to start.
 
-My [LC-3 VM](https://github.com/ShahriarAhnaf/LC-3-VM) runs instructions for an educational computer architecture. It keeps track of memory, registers, and which instruction comes next. The core is a loop: read an instruction, work out what it means, change some stored values, and repeat. I knew loops. How hard could it be...
+## Giving a program its own computer
+
+My [lil virtual machine](https://github.com/ShahriarAhnaf/LC-3-VM) emulates LC-3, an educational computer architecture. An architecture defines the instructions a processor understands. An ARM or x86 processor can't directly execute LC-3 instructions, so my C program does the interpreting.
+
+The “computer” starts with arrays: one represents LC-3 memory, holding the program's instructions and data; another holds its registers, the processor's small storage slots. A program counter tracks which instruction to read next.
+
+The VM reads that instruction, decodes what it asks for, and updates those arrays. An LC-3 addition becomes C code that adds two stored values. A memory write changes an array entry. Then the loop repeats. Underneath, my actual processor is executing the compiled C program.
+
+That's how it “tricks” the LC-3 program: it supplies the memory and instruction behavior the program expects. It doesn't need physical LC-3 silicon. I wasn't recreating every gate; I was recreating their effects on the values a program can see.
+
+I knew arrays and loops. How hard could it be...
 
 ## “bugs fixed” → “bruh”
 
