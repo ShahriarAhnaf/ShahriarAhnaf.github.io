@@ -1,119 +1,68 @@
 ---
 title: "What building a lil virtual machine taught me"
 date: "2026-09-09"
-description: "Printf debugging, learning what a program needs from a computer, and the beginnings of my journey toward Simantic."
+description: "From ‘bugs fixed’ to ‘bruh’ in 39 seconds: printf debugging, learning what a program needs, and the beginnings of Simantic."
 draft: false
 ---
 
-For my first post, I wanted to return to a small project: my [lil virtual machine](https://github.com/ShahriarAhnaf/LC-3-VM).
+The cracked people in Electrical Engineering were all going through Ben Eater's 8-bit computer tutorial. I kinda wanted to make something substantial in software to solidify what it meant to be in Computer Engineering. But my pea brain couldn't wrap itself around what an OS really was, so I settled for a lil virtual machine.
 
-The cracked people in Electrical Engineering were all going through Ben Eater's 8-bit computer tutorial, which is why I kinda wanted to make something substantial in software to really solidify what it meant to be in Computer Engineering. But my pea brain couldn't wrap itself around what an OS really was, so I settled for a lil virtual machine.
+I hadn't even taken an OS class yet. A computer had a lot of parts I could name without really understanding how they worked together. Building a small version in C gave me somewhere to start.
 
-It's a program written in C that interprets instructions for LC-3, an educational computer architecture. It has memory, registers, a program counter, and code that decides what each instruction does. It was small enough to follow, but had enough moving parts to make the ideas behind a computer feel concrete. I hadn't even taken an OS class yet, so all of this was new to me.
+My [LC-3 VM](https://github.com/ShahriarAhnaf/LC-3-VM) runs instructions for an educational computer architecture. It keeps track of memory, registers, and which instruction comes next. The core is a loop: read an instruction, work out what it means, change some stored values, and repeat. I knew loops. How hard could it be...
 
-I started from [*Write your Own Virtual Machine* by Justin Meiners and Ryan Pendleton](https://www.jmeiners.com/lc3-vm/). They deserve the credit for the tutorial and its foundation. My repository records me stumbling through it, along with debugging output and experiments around instruction decoding and timing.
+## “bugs fixed” → “bruh”
 
-This was around the time I was also realizing that just copying tutorials was not enough. To truly understand a system, you have to break and modify it. That was my goal here: go beyond the tutorial.
+My commit history tells this part better than I can.
 
-Looking back, this was the start of my journey toward building the emulator at [Simantic](https://simantic.dev). This lil virtual machine was how I started learning what a computer program actually needs in order to run.
+On April 2, 2022, I committed “finished.” Then came “fixing bugs” and “bugs fixed.” Thirty-nine seconds after “bugs fixed,” I committed “bruh.”
 
-## An instruction becomes a change in state
+![GitHub commit history showing “better make file, LOGIC ERRORS IN CODE,” “bruh,” and “bugs fixed.”](/images/blog/lc3-commit-history-crop.png)
 
-If you've taken first-year digital logic, think about an adder connected to a few registers. The adder calculates a result from its inputs. The registers hold on to bits, even after those inputs change. The bits currently stored in those registers are part of the computer's **state**.
+*Actual [commit history](https://github.com/ShahriarAhnaf/LC-3-VM/commits/main/?since=2022-04-02&until=2022-04-04), newest first. Confidence was moving faster than correctness.*
 
-An instruction tells the computer which values to use, what to do with them, and where to store the result. In a hardware implementation, control signals select the inputs and enable the right register to save the output. My VM describes those changes with C code. It models the result of executing an instruction, rather than simulating every gate or clock edge.
+The next day wasn't much smoother: “gets to ansi prompt but no further,” followed by “small bug fix still not working VM.” Getting something to appear on screen and getting the program to work were apparently two different milestones.
 
-Take `ADD R2, R0, R1`. It means “add the numbers in R0 and R1, then put the answer in R2.” If R0 holds 3 and R1 holds 4, R2 becomes 7. Those input values are called **operands**. R2 is the **destination**: the register that receives the answer.
+One of the [fixes](https://github.com/ShahriarAhnaf/LC-3-VM/commit/7e53fa6a0a07697c301682dfabe3239208660a31) was painfully small. I was reading the wrong bits of an instruction to select an input register. In one case, I shifted by five bits when I needed to shift by six.
 
-```text
-R0 holds 3 ──┐
-            ├── adder ── 7 gets saved in R2
-R1 holds 4 ──┘
-```
+If you've taken first-year digital logic, imagine wiring up an adder correctly but connecting the wrong wires to the selector that chooses its inputs. It can add perfectly and still give you the wrong answer because you fed it the wrong value. That was the kind of mistake I was making in software.
 
-Instructions such as `ADD` also make the LC-3 remember whether their result was negative, zero, or positive. These are its **condition flags**: three stored yes/no bits, with one set to 1 to describe the result. For our answer of 7, the positive bit is set. Think of the zero flag as the output of a “does this equal zero?” circuit, saved so another instruction can use it later.
-
-A **branch** is an instruction that can choose a different instruction to run next. A branch-on-zero checks that saved zero bit. If it is 1, execution jumps to the specified location; otherwise, it carries on. In digital logic terms, that decision is like a select signal choosing between two inputs of a multiplexer: the next address in order, or the branch's target address.
-
-This is why getting the addition right is only part of the job. If the answer changes from 7 to 0 but I forget to update those saved bits, a later branch makes its decision using the old result.
-
-The core of the VM is a loop: read an instruction, work out what it means, update the stored values, and repeat. I was already very familiar with loops, so how hard could it be...
-
-In my implementation, reading an instruction and finding the operation looks like this:
-
-```c
-uint16_t instr = mem_read(registers[R_PC]++);
-uint16_t op = instr >> 12;
-```
-
-The **program counter**, `R_PC`, is a register holding the memory address of the next instruction. The first line reads the instruction at that address and advances the counter by one. Each LC-3 instruction is 16 bits long. The second line shifts it right by 12 bits, leaving the top four bits. Those bits are the **opcode**: the code that selects an operation such as addition.
-
-Think of those four bits as inputs to a decoder in a digital logic lab. They tell the machine which operation to perform. Other bits in the instruction select registers or supply a small number directly. My C code uses a `switch` to choose what happens next; the individual cases live in [main.c](https://github.com/ShahriarAhnaf/LC-3-VM/blob/e5a7f36448a45e1cfcb3a2d863018b3252ca31b6/src/main.c).
-
-## A register number is not the value inside it
-
-One distinction worth getting straight is the difference between selecting a register and reading its contents.
-
-```text
-instruction bits → register index → stored value
-```
-
-The index `1` selects R1. The value in R1 could be a number, an address, or a bit pattern whose meaning depends on the instruction using it.
-
-My old README muddles this by saying registers only contain addresses. They don't. Looking back at the project is useful partly because I can correct explanations like that instead of preserving them as if they were finished knowledge.
-
-The same care matters with memory. The array in [VM.h](https://github.com/ShahriarAhnaf/LC-3-VM/blob/e5a7f36448a45e1cfcb3a2d863018b3252ca31b6/src/VM.h) has 65,536 entries, each holding a 16-bit word. An address chooses an entry; the entry contains a value. A load-indirect instruction follows an extra step: it reads an address from memory, then reads the value at that address.
-
-Those distinctions are small enough to explain in a sentence and important enough to break an entire program.
+That makes the project more useful to look back on than a clean final implementation. I can see the gap between recognizing the code and understanding what every part was doing.
 
 ## Printf debugging (trace debugging for the pros)
 
 Funnily enough, I barely used GDB or LLDB back then. I worked through this project with `printf` debugging—trace debugging for the pros.
 
-Print the state. Run the program. Read what happened. Try to work out where it stopped matching what I expected.
+The [“added debugger” commit](https://github.com/ShahriarAhnaf/LC-3-VM/commit/7228be0e49a801c67d8ecdf044dbd8fe2a2630b3) really is functions that print registers and memory. Nothing fancy. Print the state, run the program, and try to work out where it stopped matching what I expected.
 
-I added functions to dump memory and register state. `MAP_VM` records nonzero memory contents, while `MAP_REGISTERS` records register snapshots. In the debug build, the main loop requests a snapshot when it encounters a branch opcode. [Debugging helpers](https://github.com/ShahriarAhnaf/LC-3-VM/blob/e5a7f36448a45e1cfcb3a2d863018b3252ca31b6/src/VM.c).
+“State” sounds more intimidating than it is here. It means the values the machine is holding onto: what's in each register, what's in memory, and where execution has reached. Those dumps were my view into the computer I was building.
 
-Those dumps were my view into the machine. I could follow where execution went, what the registers held, and what condition a branch observed. A wrong final answer became a sequence of changes I could inspect.
+Instead of only seeing a wrong answer, I could inspect the smaller changes leading up to it. That gave me something concrete to reason about. A tiny example is easier to follow by hand—just like coding by hand in an exam (doom).
 
-The useful habit was making the program explain what it was doing. I had to decide which state mattered enough to print, then connect that output back to the instruction that changed it. That is a habit I still want in an emulator: being able to see why the firmware reached a particular state.
+The habit that stayed with me was making the program explain what it was doing. Choosing what to print forced me to think about what mattered. The logging was part of learning the machine, not just something I added after writing it.
 
-A useful way to learn from this project is to trace one instruction by hand. Choose starting register values, predict the answer and which negative/zero/positive bit should be set, then compare those predictions with the implementation. Extend that to a branch and follow the next instruction address.
+## Going beyond the tutorial
 
-You don't need a large program to find a mistake in a state transition. A tiny example is often easier to reason about—just like coding by hand in an exam (doom).
+I started from [*Write your Own Virtual Machine* by Justin Meiners and Ryan Pendleton](https://www.jmeiners.com/lc3-vm/). They deserve the credit for the tutorial and its foundation. My repository records me stumbling through it.
 
-## A memory read can have behavior
+Around then, I was realizing that copying tutorials wasn't enough for me. I needed to break and modify things to understand them. The errors were annoying, but they gave me specific questions that reading working code hadn't.
 
-The keyboard handling is another part worth following.
+I also tried making the VM faster by moving repeated instruction-decoding work into a shared part of the loop. That led to more logging and a Python script to compare timings. Looking back, I'd be more careful with those measurements: there are problems with how I handled timestamps and units, so I wouldn't repeat the old speedup claims today.
 
-In `mem_read`, the keyboard-status address receives special treatment. The VM checks whether terminal input is available. If it is, it updates the emulated keyboard status and data locations before returning the requested value. [Memory-read implementation](https://github.com/ShahriarAhnaf/LC-3-VM/blob/e5a7f36448a45e1cfcb3a2d863018b3252ca31b6/src/VM.c).
+My explanations weren't finished either. The old README says registers only contain addresses. They don't; they can hold numbers and other values too. Keeping the project around lets me revisit those misunderstandings instead of pretending I understood everything when I wrote it.
 
-So an instruction that looks like a memory access can interact with a device model. That is a useful connection between the CPU loop and the world outside it: the program sees an address, while the implementation gives that address behavior.
+## What a program actually needs
 
-## Optimization made me ask better questions
+The bigger question this opened up was: what does a program actually need from a computer?
 
-I also experimented with reading the bits that select registers before the `switch` chooses an operation. Several instructions use the same bit positions for these register numbers, so I wanted to see whether I could do that work once in a shared part of the loop. The repository includes a logging build and a [Python script comparing timings by opcode](https://github.com/ShahriarAhnaf/LC-3-VM/blob/e5a7f36448a45e1cfcb3a2d863018b3252ca31b6/optimized-compare.py).
+For this lil virtual machine, it started with somewhere to store values and rules for changing them. But arithmetic alone wasn't enough. The program also needed input and output. My keyboard handling gave certain memory addresses special behavior so a program could check for input and read a character.
 
-The interesting question was whether repeated decoding work could be moved into a common path. But a common path still has to supply the right fields for every instruction that uses them. Fewer repeated lines are not enough to establish correctness or speed.
+That was a connection I could follow all the way through: an instruction, an address, and code that made the outside world available to the program. The parts were starting to fit together.
 
-Looking at the measurement code now, I would also be more careful with the evidence. The logger subtracts only the nanosecond fields of two timestamps, which mishandles measurements that cross a second boundary. The comparison script applies a scaling factor that needs checking before its displayed units can be trusted. Per-instruction timing also needs to account for the cost of measurement itself.
+Looking back, this was the start of my journey toward building the emulator at [Simantic](https://simantic.dev). The systems are more complicated now, but I'm still working on giving firmware the machine behavior it expects and making that behavior visible when something goes wrong.
 
-I wouldn't use the old output as a reliable speedup claim today. I would first verify the instruction behavior, then compare repeatable workloads with clear timing units and an explicit baseline.
+I didn't have Simantic planned from the beginning. I was just trying to understand how computers work. Looking back now, I can see how nicely it all connected later as part of God's plan.
 
-That is part of what makes keeping this project useful. The code preserves both the experiment and the assumptions I can revisit.
+That's why I wanted this to be my first post. Being curious about how systems work never fails you as an engineer. Sometimes it starts with a lil virtual machine and a commit that just says “bruh.”
 
-## From LC-3 to Simantic
-
-The question this project opened up for me was: what does a program actually need from a computer?
-
-For this VM, the answer started with somewhere to keep state, rules for executing instructions, and ways to get input and produce output.
-
-That is the connection I see to [Simantic](https://simantic.dev) now. The systems are more complicated, but I am still working on giving firmware the machine behavior it expects and making that behavior visible enough to understand when something goes wrong.
-
-An instruction has to update the right state. A peripheral access has to mean something. An event the program is waiting for has to arrive under the right conditions. My LC-3 project gave me a small enough version of that problem to start working through it myself.
-
-I don't want to rewrite the story as if I had Simantic planned from the beginning. I was just trying to understand how computers work. Looking back now, I can see how nicely it all connected later as part of God's plan.
-
-That is why I wanted this to be my first post. It gives this site a starting point I can keep coming back to as the work grows. Being curious about how systems work never fails you as an engineer.
-
-The [source is here](https://github.com/ShahriarAhnaf/LC-3-VM). If you want to build your own, the [original tutorial](https://www.jmeiners.com/lc3-vm/) is the starting point I used. My repository preserves the implementation, experiments, and unfinished edges.
+The [source is here](https://github.com/ShahriarAhnaf/LC-3-VM). If you want to build your own, the [original tutorial](https://www.jmeiners.com/lc3-vm/) is the starting point I used.
