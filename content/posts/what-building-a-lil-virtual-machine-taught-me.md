@@ -15,7 +15,7 @@ My [LC-3 VM](https://github.com/ShahriarAhnaf/LC-3-VM) runs instructions for an 
 
 My commit history tells this part better than I can.
 
-On April 2, 2022, I committed “finished.” Then came “fixing bugs” and “bugs fixed.” Thirty-nine seconds after “bugs fixed,” I committed “bruh.”
+On April 2022, instead of focusing on my exams I committed to finishing this project. In the same day fixing bugs bugs just for 30 seconds later to have a “bruh.” moment. Truly the pre AI coding coded.
 
 ![GitHub commit history showing “better make file, LOGIC ERRORS IN CODE,” “bruh,” and “bugs fixed.”](/images/blog/lc3-commit-history-crop.png)
 
@@ -25,7 +25,7 @@ The next day wasn't much smoother: “gets to ansi prompt but no further,” fol
 
 One of the [fixes](https://github.com/ShahriarAhnaf/LC-3-VM/commit/7e53fa6a0a07697c301682dfabe3239208660a31) was painfully small. I was reading the wrong bits of an instruction to select an input register. In one case, I shifted by five bits when I needed to shift by six.
 
-If you've taken first-year digital logic, imagine wiring up an adder correctly but connecting the wrong wires to the selector that chooses its inputs. It can add perfectly and still give you the wrong answer because you fed it the wrong value. That was the kind of mistake I was making in software.
+If you've taken first-year digital logic(which is as low level as I got back then), imagine wiring up an adder correctly but connecting the wrong wires to the selector that chooses its inputs. It can add perfectly and still give you the wrong answer because you fed it the wrong value. That was the kind of mistake I was making in software.
 
 That makes the project more useful to look back on than a clean final implementation. I can see the gap between recognizing the code and understanding what every part was doing.
 
@@ -63,6 +63,6 @@ Looking back, this was the start of my journey toward building the emulator at [
 
 I didn't have Simantic planned from the beginning. I was just trying to understand how computers work. Looking back now, I can see how nicely it all connected later as part of God's plan.
 
-That's why I wanted this to be my first post. Being curious about how systems work never fails you as an engineer. Sometimes it starts with a lil virtual machine and a commit that just says “bruh.”
+That's why I wanted this to be my first post. Being curious about how systems work never fails you as an engineer. Sometimes it start with a commit that just says “bruh.”
 
 The [source is here](https://github.com/ShahriarAhnaf/LC-3-VM). If you want to build your own, the [original tutorial](https://www.jmeiners.com/lc3-vm/) is the starting point I used.
