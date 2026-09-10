@@ -18,7 +18,7 @@ This repository contains the editable React/TypeScript source. Vinext builds it 
 | Automatic build and publishing | `.github/workflows/pages.yml` |
 
 Assets in `public/` use root URLs: `public/images/ahnaf.jpg` becomes `/images/ahnaf.jpg`.
-The résumé links to an existing May 2025 PDF archive; update both its URL and date labels when replacing it.
+The main résumé links use the `embedded` branch PDF, last updated February 26, 2026. Update the URL and date labels in `app/page.tsx` when replacing it. Older experience citations retain their May 2025 source.
 
 ## Local development
 
