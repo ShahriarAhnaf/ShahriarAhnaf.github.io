@@ -13,6 +13,8 @@ I hadn't even taken an OS class yet. I could name computer parts without underst
 
 My [lil virtual machine](https://github.com/ShahriarAhnaf/LC-3-VM) emulates LC-3, an educational computer architecture. An architecture defines the instructions a processor understands. An ARM or x86 processor can't directly execute LC-3 instructions, so my C program does the interpreting.
 
+![Inside the LC-3 VM: memory, registers, an instruction loop, and input/output handling, running on the host computer.](/images/blog/lil-vm-boxes.svg)
+
 The “computer” starts with arrays: one represents LC-3 memory, holding the program's instructions and data; another holds its registers, the processor's small storage slots. A program counter tracks which instruction to read next.
 
 The VM reads that instruction, decodes what it asks for, and updates those arrays. An LC-3 addition becomes C code that adds two stored values. A memory write changes an array entry. Then the loop repeats. Underneath, my actual processor is executing the compiled C program.
